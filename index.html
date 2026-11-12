@@ -10,23 +10,33 @@
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#fbf3e2; --surface:#fffdf7; --ink:#2f1a1f; --muted:#6f5a52; --maroon:#7a1f2b; --gold:#c4952e;
-  --ok:#1f7a3a; --okbg:#d9f0de; --no:#b3261e; --nobg:#fadcd8; --mix:white;
+  --bg:#fbf3e2; --surface:#fffdf7; --ink:#2f1a1f; --muted:#6f5a52; --maroon:#7a1f2b; --gold:#c4952e; --mix:white;
 }
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
+  :root{
     color-scheme:dark;
-    --bg:#1b0e11; --surface:#291619; --ink:#f5e9d2; --muted:#cdb89d; --maroon:#d1697a; --gold:#e3b855;
-    --ok:#7fdc97; --okbg:#1d3a25; --no:#ff9a91; --nobg:#46201d; --mix:#291619;
+    --bg:#1b0e11; --surface:#291619; --ink:#f5e9d2; --muted:#cdb89d; --maroon:#d1697a; --gold:#e3b855; --mix:#291619;
   }
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;line-height:1.7}
+.hide{display:none!important}
 .wrap{max-width:720px;margin:0 auto;padding:16px 14px 40px}
 header{text-align:center;padding:14px 8px 8px}
 h1{font-family:"Amiri","Cairo",serif;font-size:clamp(26px,7vw,38px);margin:0;color:var(--maroon);line-height:1.3}
 header p{margin:4px 0 0;color:var(--muted)}
+.box{background:var(--surface);border:3px solid var(--gold);border-radius:18px;padding:20px 16px;margin-top:16px;text-align:center}
+.box label{display:block;font-weight:800;margin-bottom:8px;font-size:18px}
+.box input{width:100%;padding:12px 14px;font:inherit;font-size:18px;border-radius:12px;border:2px solid var(--gold);background:var(--bg);color:var(--ink);text-align:center}
+.box input:focus-visible{outline:3px solid var(--maroon)}
+.btn{display:inline-block;margin-top:14px;padding:12px 30px;border-radius:99px;border:0;background:var(--maroon);color:#fff;font:inherit;font-weight:800;font-size:17px;cursor:pointer;text-decoration:none}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.wa{background:#1f9d55}
+.btn.alt{background:transparent;color:var(--maroon);border:2px solid var(--maroon)}
+.note{color:var(--muted);margin:10px 0 0;font-size:15px}
+.warn{color:#b3261e;font-weight:800;margin-top:8px}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0 12px}
 .track{height:12px;border-radius:99px;background:color-mix(in srgb,var(--gold) 25%,var(--mix));overflow:hidden}
 .fill{height:100%;width:0;background:linear-gradient(90deg,#e8553d,#f2b134,#2fa866,#2f7fd1,#8a4fc7);transition:width .3s}
@@ -38,37 +48,50 @@ header p{margin:4px 0 0;color:var(--muted)}
 .opt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;border:2px solid color-mix(in srgb,var(--c) 45%,var(--mix));background:color-mix(in srgb,var(--c) 10%,var(--mix));font-size:17px;font-weight:600;-webkit-tap-highlight-color:transparent}
 .opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .opt .mark{margin-inline-start:auto;font-weight:800}
-.card.done .opt{cursor:default}
-.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
-.opt.no{background:var(--nobg);border-color:var(--no);color:var(--no)}
-.fb{padding:0 14px 12px;font-weight:600;min-height:0}
-.res{display:none;text-align:center;padding:22px 16px;border-radius:18px;border:3px solid var(--gold);background:var(--surface);margin-top:18px}
-.res.show{display:block}
-.res .big{font-family:"Amiri","Cairo",serif;font-size:44px;color:var(--maroon);line-height:1.2}
-.res .stars{font-size:32px;letter-spacing:4px}
-.btn{margin-top:12px;padding:11px 28px;border-radius:99px;border:0;background:var(--maroon);color:#fff;font:inherit;font-weight:800;cursor:pointer}
-.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.opt.sel{background:var(--c);border-color:var(--c);color:#fff}
+.big{font-family:"Amiri","Cairo",serif;font-size:46px;color:var(--maroon);line-height:1.2}
+.stars{font-size:32px;letter-spacing:4px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>امتحان صموئيل الأول – الإصحاح السادس</h1>
-    <p>اختر الإجابة الصحيحة. تظهر النتيجة فور الاختيار.</p>
+    <p>8 أسئلة. اختر إجابة لكل سؤال ثم أنهِ الامتحان لتعرف درجتك.</p>
   </header>
-  <div class="bar">
+
+  <section class="box" id="startBox">
+    <label for="nm">اكتب اسمك الثلاثي</label>
+    <input id="nm" type="text" autocomplete="name" maxlength="60">
+    <div class="warn hide" id="nmWarn">من فضلك اكتب اسمك أولًا.</div>
+    <button class="btn" id="go" type="button">ابدأ الامتحان</button>
+    <p class="note" id="startNote"></p>
+  </section>
+
+  <div class="bar hide" id="bar">
     <div class="track"><div class="fill" id="fill"></div></div>
-    <div class="score"><span id="prog">0 / 8 أُجيب</span><span id="pts">الدرجة: 0</span></div>
+    <div class="score"><span id="prog">تمت الإجابة على 0 من 8</span></div>
   </div>
   <main id="qs"></main>
-  <section class="res" id="res" aria-live="polite">
+  <div style="text-align:center" class="hide" id="finWrap">
+    <div class="warn hide" id="finWarn">أجب على كل الأسئلة أولًا.</div>
+    <button class="btn" id="fin" type="button">إنهاء الامتحان</button>
+  </div>
+
+  <section class="box hide" id="res" aria-live="polite">
     <div class="stars" id="stars"></div>
     <div class="big" id="final"></div>
     <p id="msg"></p>
-    <button class="btn" id="again" type="button">إعادة الامتحان</button>
+    <a class="btn wa hide" id="wa" target="_blank" rel="noopener">إرسال النتيجة على واتساب</a>
+    <p class="note hide" id="waNote">اضغط الزر ثم اضغط إرسال في الواتساب حتى تصل نتيجتك.</p>
+    <br>
+    <button class="btn alt hide" id="again" type="button">إعادة المحاولة</button>
+    <p class="note" id="left"></p>
   </section>
 </div>
+
 <script>
+var PHONE="201211970083", MAX=2, KEY="samuel6_exam_v1";
 var Q=[
  ["كم شهرًا بقي تابوت الرب في بلاد الفلسطينيين؟",["ثلاثة أشهر","سبعة أشهر","عشرة أشهر","أربعين يومًا"],1,"#e8553d"],
  ["من استشار الفلسطينيون ليعرفوا ماذا يفعلون بالتابوت؟",["الأنبياء","الملك والقضاة","الكهنة والعرّافين","شيوخ بني إسرائيل"],2,"#2f7fd1"],
@@ -79,45 +102,112 @@ var Q=[
  ["ماذا حدث لمن نظروا إلى داخل التابوت؟",["باركهم الرب","ضرب الرب منهم عددًا كبيرًا","لم يحدث شيء","صاروا كهنة"],1,"#0e9aa7"],
  ["إلى أين أرسل أهل بيت شمس التابوت؟",["أورشليم","شيلوه","بيت إيل","قرية يعاريم"],3,"#7a1f2b"]
 ];
-var qs=document.getElementById("qs"),score=0,answered=0;
+
+function $(id){return document.getElementById(id);}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e;}
-function build(){
-  qs.textContent="";score=0;answered=0;upd();document.getElementById("res").className="res";
+function show(id,on){$(id).classList.toggle("hide",!on);}
+function ld(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+var st=ld(), chosen=[], order=[];
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function init(){
+  var used=st.n||0;
+  if(st.name)$("nm").value=st.name;
+  if(used>=MAX){ showResult(true); show("startBox",false); return; }
+  var note="لديك "+(MAX-used)+" من "+MAX+" محاولات.";
+  if(typeof st.last==="number")note+=" آخر درجة لك: "+st.last+" من "+Q.length+".";
+  $("startNote").textContent=note;
+}
+
+function startExam(){
+  var name=$("nm").value.trim();
+  if(name.length<2){show("nmWarn",true);return;}
+  show("nmWarn",false);
+  st.n=(st.n||0)+1; st.name=name; st.done=false; sv();
+  show("startBox",false); show("res",false);
+  buildQuiz();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function buildQuiz(){
+  var qs=$("qs"); qs.textContent="";
+  chosen=[]; order=[];
   Q.forEach(function(q,i){
-    var card=el("div","card");card.style.setProperty("--c",q[3]);
-    var h=el("h2");h.appendChild(el("span","n",String(i+1)));h.appendChild(el("span","",q[0]));
-    var box=el("div","opts"),fb=el("div","fb");
-    q[1].forEach(function(t,j){
-      var b=el("button","opt");b.type="button";b.appendChild(el("span","",t));var m=el("span","mark","");b.appendChild(m);
+    chosen.push(-1);
+    var idx=shuffle([0,1,2,3]); order.push(idx);
+    var card=el("div","card"); card.style.setProperty("--c",q[3]);
+    var h=el("h2"); h.appendChild(el("span","n",String(i+1))); h.appendChild(el("span","",q[0]));
+    var box=el("div","opts");
+    idx.forEach(function(orig,pos){
+      var b=el("button","opt"); b.type="button";
+      b.appendChild(el("span","",q[1][orig]));
+      b.appendChild(el("span","mark",""));
       b.addEventListener("click",function(){
-        if(card.classList.contains("done"))return;
-        card.classList.add("done");answered++;
+        chosen[i]=pos;
         var all=box.querySelectorAll(".opt");
-        all[q[2]].classList.add("ok");all[q[2]].lastChild.textContent="✓";
-        if(j===q[2]){score++;fb.textContent="أحسنت! إجابة صحيحة.";fb.style.color="var(--ok)";}
-        else{b.classList.add("no");m.textContent="✗";fb.textContent="الإجابة الصحيحة: "+q[1][q[2]];fb.style.color="var(--no)";}
-        upd();if(answered===Q.length)finish();
+        for(var k=0;k<all.length;k++){all[k].classList.remove("sel");all[k].lastChild.textContent="";}
+        b.classList.add("sel"); b.lastChild.textContent="●";
+        updProg();
       });
       box.appendChild(b);
     });
-    card.appendChild(h);card.appendChild(box);card.appendChild(fb);qs.appendChild(card);
+    card.appendChild(h); card.appendChild(box); qs.appendChild(card);
   });
+  show("bar",true); show("finWrap",true); show("finWarn",false); updProg();
 }
-function upd(){
-  document.getElementById("prog").textContent=answered+" / "+Q.length+" أُجيب";
-  document.getElementById("pts").textContent="الدرجة: "+score;
-  document.getElementById("fill").style.width=(answered/Q.length*100)+"%";
+
+function answeredCount(){return chosen.filter(function(c){return c>=0;}).length;}
+function updProg(){
+  var a=answeredCount();
+  $("prog").textContent="تمت الإجابة على "+a+" من "+Q.length;
+  $("fill").style.width=(a/Q.length*100)+"%";
+  if(a===Q.length)show("finWarn",false);
 }
-function finish(){
-  var r=document.getElementById("res");r.className="res show";
-  document.getElementById("final").textContent=score+" من "+Q.length;
-  var s=score>=7?5:score>=5?4:score>=3?3:2;
-  document.getElementById("stars").textContent="★".repeat(s)+"☆".repeat(5-s);
-  document.getElementById("msg").textContent=score>=7?"ممتاز! أنت حافظ القصة جيدًا.":score>=5?"جيد جدًا! راجع الأسئلة التي أخطأت فيها.":"حاول مرة أخرى بعد قراءة الإصحاح.";
-  r.scrollIntoView({behavior:"smooth",block:"center"});
+
+function finishExam(){
+  if(answeredCount()<Q.length){show("finWarn",true);return;}
+  var s=0;
+  Q.forEach(function(q,i){ if(order[i][chosen[i]]===q[2])s++; });
+  st.last=s; st.done=true; sv();
+  show("bar",false); show("finWrap",false); $("qs").textContent="";
+  showResult(false);
+  window.scrollTo({top:0,behavior:"smooth"});
 }
-document.getElementById("again").addEventListener("click",function(){build();window.scrollTo({top:0,behavior:"smooth"});});
-build();
+
+function showResult(locked){
+  show("res",true);
+  var used=st.n||0, hasScore=(typeof st.last==="number");
+  if(hasScore){
+    var s=st.last, stars=s>=7?5:s>=5?4:s>=3?3:2;
+    $("stars").textContent="★".repeat(stars)+"☆".repeat(5-stars);
+    $("final").textContent="درجتك: "+s+" من "+Q.length;
+    $("msg").textContent=s>=7?"ممتاز! أنت حافظ القصة جيدًا.":s>=5?"جيد جدًا! استمر.":"حاول مرة أخرى بعد قراءة الإصحاح.";
+    var text="نتيجة امتحان صموئيل الأول – الإصحاح السادس\nالاسم: "+(st.name||"")+"\nالدرجة: "+s+" من "+Q.length+"\nالمحاولة: "+used;
+    $("wa").href="https://wa.me/"+PHONE+"?text="+encodeURIComponent(text);
+    show("wa",true); show("waNote",true);
+  } else {
+    $("stars").textContent=""; $("final").textContent="";
+    $("msg").textContent="انتهت محاولاتك في هذا الامتحان.";
+  }
+  var remaining=MAX-used;
+  if(!locked && remaining>0){
+    show("again",true);
+    $("left").textContent="باقي لك "+remaining+" محاولة.";
+  } else {
+    show("again",false);
+    $("left").textContent="لا توجد محاولات متبقية.";
+  }
+}
+
+$("go").addEventListener("click",startExam);
+$("fin").addEventListener("click",finishExam);
+$("again").addEventListener("click",function(){
+  st.n=(st.n||0)+1; st.done=false; sv();
+  show("res",false); buildQuiz(); window.scrollTo({top:0,behavior:"smooth"});
+});
+init();
 </script>
 </body>
 </html>
